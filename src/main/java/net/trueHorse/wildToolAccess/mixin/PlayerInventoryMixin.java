@@ -25,16 +25,16 @@ public class PlayerInventoryMixin implements PlayerInventoryAccess{
 
     @Final
     @Shadow
-    public DefaultedList<ItemStack> main;
+    private DefaultedList<ItemStack> main;
 
-    @Inject(method = "scrollInHotbar", at = @At("HEAD"), cancellable = true)
-    private void scrollInAccessBar(double scrollAmount, CallbackInfo info) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if(((InGameHudAccess)client.inGameHud).getOpenAccessBar()!=null){
-            ((InGameHudAccess)client.inGameHud).getOpenAccessBar().scrollInAccessBar(scrollAmount);
-            info.cancel();
-        }
-    }
+//    @Inject(method = "setSelectedSlot", at = @At("HEAD"), cancellable = true)
+//    private void scrollInAccessBar(int slot, CallbackInfo ci) {
+//        MinecraftClient client = MinecraftClient.getInstance();
+//        if(((InGameHudAccess)client.inGameHud).getOpenAccessBar()!=null){
+//            ((InGameHudAccess)client.inGameHud).getOpenAccessBar().scrollInAccessBar(-slot);
+//            ci.cancel();
+//        }
+//    }
 
     @Override
     public ArrayList<ItemStack> getAllMainStacksOfType(String name){

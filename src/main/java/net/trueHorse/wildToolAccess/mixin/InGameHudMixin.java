@@ -1,12 +1,15 @@
 package net.trueHorse.wildToolAccess.mixin;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,28 +69,28 @@ public class InGameHudMixin implements InGameHudAccess{
 
                 int firstSlotXCoordinate = context.getScaledWindowWidth() / 2 -10+WildToolAccessConfig.getIntValue("xOffset");
                 int yCoordinate = context.getScaledWindowHeight()/2 -54+WildToolAccessConfig.getIntValue("yOffset");
-                context.getMatrices().push();
-                context.getMatrices().translate(0.0F, 0.0F, -90.0F);
+                context.getMatrices().pushMatrix();
+                context.getMatrices().translate(0.0F, 0.0F);
 
                 int xCoordinate;
                 int spaceBetweenSlots = 20+WildToolAccessConfig.getIntValue("spaceBetweenSlots");
                 
                 if(openAccessbar.getStacks().size()==1){
-                    context.drawTexture(barTextures, firstSlotXCoordinate, yCoordinate, 66, 0, 22, 22);
+                    context.drawTexture(RenderPipelines.GUI_TEXTURED, barTextures, firstSlotXCoordinate, yCoordinate, 66, 0, 22, 22, 256, 256);
                 }else{
                     int k;
                     for(k = 1; k < openAccessbar.getStacks().size()-1; ++k) {
                         xCoordinate = firstSlotXCoordinate + k * spaceBetweenSlots - spaceBetweenSlots*openAccessbar.getSelectedAccessSlotIndex();
-                        context.drawTexture(barTextures, xCoordinate, yCoordinate, 0, 0, 22, 22);
+                        context.drawTexture(RenderPipelines.GUI_TEXTURED, barTextures, xCoordinate, yCoordinate, 0, 0, 22, 22, 256, 256);
                     }
                     xCoordinate = firstSlotXCoordinate - spaceBetweenSlots*openAccessbar.getSelectedAccessSlotIndex();
-                    context.drawTexture(barTextures, xCoordinate, yCoordinate, 22, 0, 22, 22);
+                    context.drawTexture(RenderPipelines.GUI_TEXTURED, barTextures, xCoordinate, yCoordinate, 22, 0, 22, 22, 256, 256);
                     xCoordinate = firstSlotXCoordinate + k * spaceBetweenSlots - spaceBetweenSlots*openAccessbar.getSelectedAccessSlotIndex();
-                    context.drawTexture(barTextures, xCoordinate, yCoordinate, 44, 0, 22, 22);
+                    context.drawTexture(RenderPipelines.GUI_TEXTURED, barTextures, xCoordinate, yCoordinate, 44, 0, 22, 22, 256, 256);
                 }
-                context.drawTexture(barTextures, firstSlotXCoordinate - 1, yCoordinate - 1, 0, 22, 24, 22);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, barTextures, firstSlotXCoordinate - 1, yCoordinate - 1, 0, 22, 24, 22, 256, 256);
 
-                context.getMatrices().pop();
+                context.getMatrices().popMatrix();
 
                 int seed =1;
                 for(int i = 0; i < openAccessbar.getStacks().size(); ++i) {
@@ -99,7 +102,6 @@ public class InGameHudMixin implements InGameHudAccess{
                 if(!labConf.equals("non")&&openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex())!=ItemStack.EMPTY){
                     renderLabels(context, labConf, firstSlotXCoordinate, yCoordinate);
                 }
-                RenderSystem.disableBlend();
             }
         }
     }
@@ -121,16 +123,16 @@ public class InGameHudMixin implements InGameHudAccess{
                 tooltip.add(name);
             }
     
-            if(labConf.equals("enchantments")){
-                if (!selectedStack.getComponents().isEmpty()) {
-                       ((ItemStackInvoker)(Object)selectedStack).invokeAppendTooltip(DataComponentTypes.ENCHANTMENTS, Item.TooltipContext.create(client.world),tooltip::add, this.client.options.advancedItemTooltips ? TooltipType.Default.ADVANCED : TooltipType.Default.BASIC);
-                }
-                if (selectedStack.getItem() instanceof PotionItem){
-                    List<Text> temp = new ArrayList<Text>();
-                    selectedStack.getItem().appendTooltip(selectedStack, Item.TooltipContext.create(client.world), temp, TooltipType.Default.ADVANCED);
-                    tooltip.add(temp.get(0));
-                }
-            }
+//            if(labConf.equals("enchantments")){
+//                if (!selectedStack.getComponents().isEmpty()) {
+//                       selectedStack.appendTooltip(DataComponentTypes.ENCHANTMENTS, Item.TooltipContext.create(client.world), TooltipDisplayComponent.DEFAULT, tooltip::add, this.client.options.advancedItemTooltips ? TooltipType.Default.ADVANCED : TooltipType.Default.BASIC);
+//                }
+////                if (selectedStack.getItem() instanceof PotionItem){
+////                    List<Text> temp = new ArrayList<Text>();
+////                    selectedStack.getItem().appendTooltip(selectedStack, Item.TooltipContext.create(client.world), TooltipDisplayComponent.DEFAULT, temp.get(0), TooltipType.Default.ADVANCED);
+////                    tooltip.add(temp.get(0));
+////                }
+//            }
         }
 
         if(tooltip.isEmpty()){

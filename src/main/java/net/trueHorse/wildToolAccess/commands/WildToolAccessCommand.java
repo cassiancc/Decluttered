@@ -139,7 +139,7 @@ public class WildToolAccessCommand {
 
     private static ArrayList<Identifier> getItemListFromInventory(CommandContext<FabricClientCommandSource> context){
         ArrayList<Identifier> ids = new ArrayList<Identifier>();
-        context.getSource().getClient().player.getInventory().main.forEach(stack-> {
+        context.getSource().getClient().player.getInventory().getMainStacks().forEach(stack-> {
             if(!stack.isEmpty()){
                 ids.add(Registries.ITEM.getId(stack.getItem()));
             }

@@ -142,10 +142,10 @@ public class WildToolAccessConfig {
                     for(JsonElement element:vals){
                         if (element.isJsonPrimitive()) {
                             if(element.getAsString().startsWith("#")){
-                                registries.get(RegistryKeys.ITEM).iterateEntries(TagKey.of(RegistryKeys.ITEM,Identifier.of(element.getAsString().substring(1)))).forEach((entry)->WildToolAccess.LOGGER.info(entry.value().getName().getString()));
-                                registries.get(RegistryKeys.ITEM).iterateEntries(TagKey.of(RegistryKeys.ITEM,Identifier.of(element.getAsString().substring(1)))).forEach((entry)->items.add(new ItemStack(entry).getItem()));
+                                registries.getOrThrow(RegistryKeys.ITEM).iterateEntries(TagKey.of(RegistryKeys.ITEM,Identifier.of(element.getAsString().substring(1)))).forEach((entry)->WildToolAccess.LOGGER.info(entry.value().getName().getString()));
+                                registries.getOrThrow(RegistryKeys.ITEM).iterateEntries(TagKey.of(RegistryKeys.ITEM,Identifier.of(element.getAsString().substring(1)))).forEach((entry)->items.add(new ItemStack(entry).getItem()));
                             }else{
-                                Optional<Item> item = Registries.ITEM.getOrEmpty(Identifier.of(element.getAsString()));
+                                Optional<Item> item = Registries.ITEM.getOptionalValue(Identifier.of(element.getAsString()));
 
                                 if(item.isEmpty()){
                                     WildToolAccess.LOGGER.error(element.getAsString()+" in "+file.getName()+" couldn't be added to stuff, because it isn't a registered item.");

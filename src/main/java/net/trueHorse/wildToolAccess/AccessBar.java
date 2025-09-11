@@ -62,12 +62,12 @@ public class AccessBar{
     public void selectItem(){
         PlayerInventory inv = client.player.getInventory();
         int slotSwapIsLockedTo = WildToolAccessConfig.getIntValue("lockSwappingToSlot");
-        int slotToSwap = !(slotSwapIsLockedTo<1||slotSwapIsLockedTo>PlayerInventory.getHotbarSize()) ? slotSwapIsLockedTo-1 : inv.selectedSlot;
+        int slotToSwap = !(slotSwapIsLockedTo<1||slotSwapIsLockedTo>PlayerInventory.getHotbarSize()) ? slotSwapIsLockedTo-1 : inv.getSelectedSlot();
         ItemStack selectedHotbarSlotStack = inv.getStack(slotToSwap);
         ItemStack selectedAccessbarStack = stacks.get(selectedAccessSlotIndex);
 
         if(selectedAccessbarStack!=ItemStack.EMPTY&&!(ItemStack.areEqual(selectedHotbarSlotStack, selectedAccessbarStack))){
-            int accessbarStackPos = inv.main.indexOf(selectedAccessbarStack);
+            int accessbarStackPos = inv.getMainStacks().indexOf(selectedAccessbarStack);
             int slotToTheRight = (slotToSwap+1)%9;
             boolean putToTheRight = (WildToolAccessConfig.getBoolValue("putToTheRightIfPossible"))&&(inv.getStack(slotToTheRight) == ItemStack.EMPTY);
             BiConsumer<Integer, Integer> swapSlots = ((slot1, slot2)->client.interactionManager.clickSlot(client.player.currentScreenHandler.syncId,slot1, slot2, SlotActionType.SWAP,client.player));
@@ -90,7 +90,7 @@ public class AccessBar{
 
             int hotbarSlotToSelect = WildToolAccessConfig.getIntValue("hotbarSlotAfterSwap");
             if(!(hotbarSlotToSelect<1||hotbarSlotToSelect>PlayerInventory.getHotbarSize())){
-                inv.selectedSlot = hotbarSlotToSelect-1;
+                inv.setSelectedSlot(hotbarSlotToSelect - 1);
             }
 
             client.getSoundManager().play(PositionedSoundInstance.master(selectionSoundEvent,1.0F,1.0F));
@@ -103,9 +103,9 @@ public class AccessBar{
 
     public void resetSelection(){
         PlayerInventory inv = client.player.getInventory();
-        if(WildToolAccessConfig.getBoolValue("heldItemSelected")&&WildToolAccessConfig.getItemType(accessType).contains(inv.getStack(inv.selectedSlot).getItem())){
+        if(WildToolAccessConfig.getBoolValue("heldItemSelected")&&WildToolAccessConfig.getItemType(accessType).contains(inv.getStack(inv.getSelectedSlot()).getItem())){
             updateAccessStacks();
-            selectedAccessSlotIndex = stacks.indexOf(inv.getStack(inv.selectedSlot));
+            selectedAccessSlotIndex = stacks.indexOf(inv.getStack(inv.getSelectedSlot()));
         }else{
             selectedAccessSlotIndex = 0;
         }
