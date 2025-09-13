@@ -96,8 +96,7 @@ public class InGameHudMixin implements InGameHudAccess{
                     this.renderHotbarItem(context, xCoordinate, yCoordinate+3, tickCounter, playerEntity, openAccessbar.getStacks().get(i).getDefaultStack(),seed++);
                 }
 
-                boolean showLabel = Decluttered.CONFIG.itemInfoShown;
-                if(!showLabel&&openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex())!= Items.AIR){
+                if(Decluttered.CONFIG.itemInfoShown&&openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex())!= Items.AIR){
                     renderLabels(context, firstSlotXCoordinate, yCoordinate);
                 }
             }
