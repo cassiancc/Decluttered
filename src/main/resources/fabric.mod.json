@@ -1,51 +1,40 @@
 {
   "schemaVersion": 1,
-  "id": "wildtoolaccess",
+  "id": "decluttered",
   "version": "${version}",
-
-  "name": "Wild Tool Access",
-  "description": "Lets you access your tools similar to how you can access them in Zelda Breath of the Wild.",
+  "name": "Decluttered",
+  "description": "Crafting block variants is a thing of the past - allows you to use a hotkey to easily swap between variants.",
   "authors": [
+    "cassiancc"
+  ],
+  "contributors": [
     "TrueHorse"
   ],
   "contact": {
-    "sources": "https://github.com/TrueHorse/Wild-Tool-Access/tree/master",
-    "issues": "https://github.com/TrueHorse/Wild-Tool-Access/issues"
+    "sources": "https://github.com/cassiancc/Decluttered/tree/master",
+    "issues": "https://github.com/cassiancc/Decluttered/issues"
   },
-
   "license": "MIT",
-  "icon": "assets/wildtoolaccess/icon.png",
-
+  "icon": "assets/decluttered/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "net.trueHorse.wildToolAccess.WildToolAccessClient"
+    "main": [
+      "cc.cassian.decluttered.Decluttered"
     ],
-    "modmenu": [
-      "net.trueHorse.wildToolAccess.compatibility.ModMenuIntegration"
+    "client": [
+      "cc.cassian.decluttered.DeclutteredClient"
     ]
   },
   "mixins": [
-    "wildtoolaccess.mixins.json"
+    "decluttered.mixins.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.14.19",
-    "fabric": "*",
-    "minecraft": "1.21.x",
-    "java": ">=21",
-    "fabric-key-binding-api-v1": "*",
-    "fabric-registry-sync-v0": "*"
+    "fabricloader": ">=0.16.14",
+    "fabric-api": "*",
+    "minecraft": "1.21.8",
+    "java": ">=21"
   },
   "suggests": {
-    "another-mod": "*"
-  },
-  "custom": {
-    "modmenu": {
-      "links": {
-        "link.wildtoolaccess.curse_forge": "https://www.curseforge.com/minecraft/mc-mods/wta",
-        "link.wildtoolaccess.modrinth": "https://modrinth.com/mod/wta"
-      }
-    }
+    "clutternomore": "*"
   }
 }

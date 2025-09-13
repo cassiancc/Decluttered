@@ -1,0 +1,23 @@
+{
+  "select0": {
+    "sounds": [
+      "decluttered:select0"
+    ]
+  },
+  "select1": {
+    "sounds": [
+      "decluttered:select1"
+    ]
+  },
+  "select2": {
+    "sounds": [
+      "decluttered:select2"
+    ]
+  },
+  "select3": {
+    "sounds": [
+      "decluttered:select3"
+    ]
+  }
+}
+
