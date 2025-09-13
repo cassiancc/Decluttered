@@ -14,9 +14,7 @@ import org.lwjgl.glfw.GLFW;
 public class DeclutteredClient implements ClientModInitializer {
 
     private static KeyBinding access1Binding;
-    private static KeyBinding access2Binding;
     private static boolean access1WasPressed;
-    private static boolean access2WasPressed;
 
     @Override
     public void onInitializeClient() {
@@ -27,13 +25,7 @@ public class DeclutteredClient implements ClientModInitializer {
         access1Binding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.decluttered.access1",
             InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_R,
-            "key.categories.inventory"
-        ));
-        access2Binding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.decluttered.access2",
-            InputUtil.Type.KEYSYM,
-            -1,
+            GLFW.GLFW_KEY_LEFT_ALT,
             "key.categories.inventory"
         ));
 
@@ -41,25 +33,15 @@ public class DeclutteredClient implements ClientModInitializer {
             InGameHudAccess hudAcc = ((InGameHudAccess)client.inGameHud);
 
             if(!Decluttered.CONFIG.toggleMode){
-                if(access1Binding.isPressed()&&access2Binding.isPressed()) {
-                    return;
-                }
 
                 if(access1Binding.isPressed()!=access1WasPressed) {
                     onAccessBindingHeldStatusChanged(access1Binding, hudAcc);
                 }
-                if(access2Binding.isPressed()!=access2WasPressed) {
-                    onAccessBindingHeldStatusChanged(access2Binding, hudAcc);
-                }
 
                 access1WasPressed = access1Binding.isPressed();
-                access2WasPressed = access2Binding.isPressed();
             }else{
                 while (access1Binding.wasPressed()) {
                     onToggleBarBindingPressed(1, hudAcc);
-                }
-                while(access2Binding.wasPressed()){
-                    onToggleBarBindingPressed(2, hudAcc);
                 }
             }
         });
@@ -68,7 +50,7 @@ public class DeclutteredClient implements ClientModInitializer {
     private void onAccessBindingHeldStatusChanged(KeyBinding accessBinding, InGameHudAccess hudAcc){
         if(!MinecraftClient.getInstance().player.isSpectator()){
             if (accessBinding.isPressed()) {
-                hudAcc.openAccessbar(accessBinding == access1Binding ? 1 : 2);
+                hudAcc.openAccessbar(1);
             } else {
                 if (hudAcc.getOpenAccessBar() != null) {
                     hudAcc.closeOpenAccessbar(true);
