@@ -1,7 +1,7 @@
 {
   "values": [
     "minecraft:birch_planks",
-    "minecraft:birch_slab",
-    "minecraft:birch_stairs"
+    "minecraft:birch_stairs",
+    "minecraft:birch_slab"
   ]
 }

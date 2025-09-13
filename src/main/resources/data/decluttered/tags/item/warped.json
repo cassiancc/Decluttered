@@ -1,7 +1,7 @@
 {
   "values": [
     "minecraft:warped_planks",
-    "minecraft:warped_slab",
-    "minecraft:warped_stairs"
+    "minecraft:warped_stairs",
+    "minecraft:warped_slab"
   ]
 }
