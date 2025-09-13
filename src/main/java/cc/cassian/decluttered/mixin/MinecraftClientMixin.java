@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.GameOptions;
 import cc.cassian.decluttered.AccessBar;
 import cc.cassian.decluttered.duck.InGameHudAccess;
-import cc.cassian.decluttered.config.ModConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,30 +26,30 @@ public abstract class MinecraftClientMixin {
     
     @Inject(method = "handleInputEvents", at = @At(value = "HEAD"))
     private void handleAccessbarSelectInput(CallbackInfo info){
-        if(((InGameHudAccess)inGameHud).getOpenAccessBar()!=null&& Decluttered.CONFIG.leftClickSelect&&this.options.attackKey.wasPressed()){
-            ((InGameHudAccess)inGameHud).closeOpenAccessbar(true);
+        if(((InGameHudAccess)inGameHud).decluttered$getOpenAccessBar()!=null&& Decluttered.CONFIG.leftClickSelect&&this.options.attackKey.wasPressed()){
+            ((InGameHudAccess)inGameHud).decluttered$closeOpenAccessbar(true);
             ((KeyBindingAccess)options.attackKey).setTimesPressed(0);
         }
     }
 
     @Inject(method = "openGameMenu", at = @At("HEAD"),cancellable = true)
     public void pauseMenuOrCloseAccess(boolean bl, CallbackInfo info){
-        if(((InGameHudAccess)inGameHud).getOpenAccessBar()!=null&& Decluttered.CONFIG.escClose){
-            ((InGameHudAccess)inGameHud).closeOpenAccessbar(false);
+        if(((InGameHudAccess)inGameHud).decluttered$getOpenAccessBar()!=null&& Decluttered.CONFIG.escClose){
+            ((InGameHudAccess)inGameHud).decluttered$closeOpenAccessbar(false);
             info.cancel();
         }
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     private void closeBarOnScreenSwitch(Screen screen, CallbackInfo info){
-        if(((InGameHudAccess)this.inGameHud).getOpenAccessBar()!=null){
-            ((InGameHudAccess)this.inGameHud).closeOpenAccessbar(false);
+        if(((InGameHudAccess)this.inGameHud).decluttered$getOpenAccessBar()!=null){
+            ((InGameHudAccess)this.inGameHud).decluttered$closeOpenAccessbar(false);
         }
     }
 
     @Inject(method = "handleInputEvents",at = @At("HEAD"))
     private void handleAccessbarNumberKeySelection(CallbackInfo ci){
-        AccessBar openAccessbar = ((InGameHudAccess)inGameHud).getOpenAccessBar();
+        AccessBar openAccessbar = ((InGameHudAccess)inGameHud).decluttered$getOpenAccessBar();
         if(!Decluttered.CONFIG.scrollWithNumberKeys||openAccessbar==null) return;
 
         for(int i = 0; i < 9; ++i) {

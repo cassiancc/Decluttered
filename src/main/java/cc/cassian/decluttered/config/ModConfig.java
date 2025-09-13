@@ -21,9 +21,8 @@ public class ModConfig extends WrappedConfig {
     public int spaceBetweenSlots = 0;
     @Comment("Locks swapping to that hotbar slot. Values <1 and >hotbar size disable this option.")
     public int lockSwappingToSlot = 0;
-    @Comment("what information should be shown about the items  all->all; enchantments-> enchantments/potion effect and name;\\n\" +\n" +
-            "                        \"#name->name; non->non")
-    public String itemInfoShown = "enchantments";
+    @Comment("Whether to render item labels")
+    public boolean itemInfoShown = true;
     @Comment("When opening a bar your currently held item is selected, if it is contained in the bar.")
-    public boolean heldItemSelected = false;
+    public boolean heldItemSelected = true;
 }

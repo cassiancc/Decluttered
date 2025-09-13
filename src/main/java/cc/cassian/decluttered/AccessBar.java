@@ -6,7 +6,9 @@ import cc.cassian.decluttered.tags.ModTags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Hand;
@@ -16,9 +18,8 @@ public class AccessBar{
 
     private final MinecraftClient client;
     private final SoundEvent selectionSoundEvent;
-    private final ArrayList<ItemStack> stacks = new ArrayList<>();
+    private final ArrayList<Item> stacks = new ArrayList<>();
     private int selectedAccessSlotIndex = 0;
-    private ItemStack lastSwappedOutTool =ItemStack.EMPTY;
     private final Identifier textures;
 
     public AccessBar(SoundEvent selectionSoundEvent, Identifier textures, MinecraftClient client){
@@ -29,28 +30,28 @@ public class AccessBar{
 
     public void updateAccessStacks(){
         if (client.player==null) return;
-        ItemStack heldItem = client.player.getMainHandStack().getItem().getDefaultStack();
+        Item heldItem = client.player.getMainHandStack().getItem();
         stacks.clear();
 
-        ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        ArrayList<Item> items = new ArrayList<>();
 
-        if (heldItem.isIn(ModTags.SWAPPABLE)) {
+        if (heldItem.getDefaultStack().isIn(ModTags.SWAPPABLE)) {
             stacks.clear();
-            heldItem.streamTags().forEach((itemTagKey -> {
+            heldItem.getDefaultStack().streamTags().forEach((itemTagKey -> {
                 var id = itemTagKey.id();
                 if (id.getNamespace().equals("decluttered") && !id.getPath().equals("swappable")) {
                     Registries.ITEM.iterateEntries(itemTagKey).forEach(itemRegistryEntry -> {
-                        var value = itemRegistryEntry.value().getDefaultStack();
-                        itemStacks.add(value);
+                        var value = itemRegistryEntry.value();
+                        items.add(value);
                     });
                 }
             }));
         }
-        if (itemStacks.isEmpty()) {
-            itemStacks.add(heldItem);
+        if (items.isEmpty()) {
+            items.add(heldItem);
         }
 
-        stacks.addAll(itemStacks);
+        stacks.addAll(items);
     }
 
     public void scrollInAccessBar(double scrollAmount) {
@@ -64,15 +65,13 @@ public class AccessBar{
         PlayerInventory inv = client.player.getInventory();
         int slotSwapIsLockedTo = Decluttered.CONFIG.lockSwappingToSlot;
         int slotToSwap = !(slotSwapIsLockedTo<1||slotSwapIsLockedTo>PlayerInventory.getHotbarSize()) ? slotSwapIsLockedTo-1 : inv.getSelectedSlot();
-        ItemStack selectedHotbarSlotStack = inv.getStack(slotToSwap);
-        ItemStack selectedAccessbarStack = stacks.get(selectedAccessSlotIndex);
+        Item selectedHotbarSlotStack = inv.getStack(slotToSwap).getItem();
+        Item selectedAccessbarStack = stacks.get(selectedAccessSlotIndex);
 
-        if(selectedAccessbarStack!=ItemStack.EMPTY){
-            client.player.setStackInHand(Hand.MAIN_HAND, selectedAccessbarStack.copyWithCount(client.player.getMainHandStack().getCount()));
+        if(!selectedAccessbarStack.equals(Items.AIR)){
+            client.player.setStackInHand(Hand.MAIN_HAND, new ItemStack(selectedAccessbarStack, client.player.getMainHandStack().getCount()));
 
             client.getSoundManager().play(PositionedSoundInstance.master(selectionSoundEvent,1.0F,1.0F));
- 
-            lastSwappedOutTool = selectedHotbarSlotStack.copy();
         }
     }
 
@@ -80,7 +79,7 @@ public class AccessBar{
         PlayerInventory inv = client.player.getInventory();
         if(Decluttered.CONFIG.heldItemSelected) {
             updateAccessStacks();
-            selectedAccessSlotIndex = stacks.indexOf(inv.getStack(inv.getSelectedSlot()));
+            selectedAccessSlotIndex = stacks.indexOf(inv.getStack(inv.getSelectedSlot()).getItem());
         }else{
             selectedAccessSlotIndex = 0;
         }
@@ -94,7 +93,7 @@ public class AccessBar{
         this.selectedAccessSlotIndex = selectedAccessSlotIndex;
     }
 
-    public ArrayList<ItemStack> getStacks() {
+    public ArrayList<Item> getStacks() {
         return stacks;
     }
 

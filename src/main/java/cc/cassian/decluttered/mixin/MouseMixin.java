@@ -15,8 +15,8 @@ public class MouseMixin {
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void scrollInAccessBar(long window, double horizontal, double vertical, CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (((InGameHudAccess) client.inGameHud).getOpenAccessBar() != null) {
-            ((InGameHudAccess) client.inGameHud).getOpenAccessBar().scrollInAccessBar(vertical);
+        if (((InGameHudAccess) client.inGameHud).decluttered$getOpenAccessBar() != null) {
+            ((InGameHudAccess) client.inGameHud).decluttered$getOpenAccessBar().scrollInAccessBar(vertical);
             ci.cancel();
         }
     }

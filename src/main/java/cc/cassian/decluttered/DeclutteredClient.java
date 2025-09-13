@@ -3,11 +3,9 @@ package cc.cassian.decluttered;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import cc.cassian.decluttered.config.ModConfig;
 import cc.cassian.decluttered.duck.InGameHudAccess;
 import org.lwjgl.glfw.GLFW;
 
@@ -50,10 +48,10 @@ public class DeclutteredClient implements ClientModInitializer {
     private void onAccessBindingHeldStatusChanged(KeyBinding accessBinding, InGameHudAccess hudAcc){
         if(!MinecraftClient.getInstance().player.isSpectator()){
             if (accessBinding.isPressed()) {
-                hudAcc.openAccessbar(1);
+                hudAcc.decluttered$openAccessbar(1);
             } else {
-                if (hudAcc.getOpenAccessBar() != null) {
-                    hudAcc.closeOpenAccessbar(true);
+                if (hudAcc.decluttered$getOpenAccessBar() != null) {
+                    hudAcc.decluttered$closeOpenAccessbar(true);
                 }
             }
         }
@@ -61,14 +59,14 @@ public class DeclutteredClient implements ClientModInitializer {
     
     private void onToggleBarBindingPressed(int barNum, InGameHudAccess hudAcc){
         if(!MinecraftClient.getInstance().player.isSpectator()){
-            if (hudAcc.getOpenAccessBar() != null) {
-                if (hudAcc.isBarWithNumberOpen(barNum)) {
-                    hudAcc.closeOpenAccessbar(true);
+            if (hudAcc.decluttered$getOpenAccessBar() != null) {
+                if (hudAcc.decluttered$isBarWithNumberOpen(barNum)) {
+                    hudAcc.decluttered$closeOpenAccessbar(true);
                 } else {
-                    hudAcc.openAccessbar(barNum);
+                    hudAcc.decluttered$openAccessbar(barNum);
                 }
             } else {
-                hudAcc.openAccessbar(barNum);
+                hudAcc.decluttered$openAccessbar(barNum);
             }
         }
     }

@@ -9,10 +9,8 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.screen.ScreenTexts;
+import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
@@ -24,6 +22,7 @@ import cc.cassian.decluttered.duck.InGameHudAccess;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -39,8 +38,11 @@ public class InGameHudMixin implements InGameHudAccess{
 
     @Final @Shadow
     private MinecraftClient client;
+    @Unique
     private final Identifier accessBarTextureSheet = Identifier.of(MOD_ID,"textures/gui/access_widgets0.png");
+    @Unique
     private AccessBar accessBars;
+    @Unique
     private AccessBar openAccessbar;
 
     @Shadow
@@ -91,53 +93,29 @@ public class InGameHudMixin implements InGameHudAccess{
                 int seed =1;
                 for(int i = 0; i < openAccessbar.getStacks().size(); ++i) {
                     xCoordinate = firstSlotXCoordinate + i * spaceBetweenSlots + 3 - spaceBetweenSlots*(openAccessbar.getSelectedAccessSlotIndex());
-                    this.renderHotbarItem(context, xCoordinate, yCoordinate+3, tickCounter, playerEntity, openAccessbar.getStacks().get(i),seed++);
+                    this.renderHotbarItem(context, xCoordinate, yCoordinate+3, tickCounter, playerEntity, openAccessbar.getStacks().get(i).getDefaultStack(),seed++);
                 }
 
-                String labConf = Decluttered.CONFIG.itemInfoShown;
-                if(!labConf.equals("non")&&openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex())!=ItemStack.EMPTY){
-                    renderLabels(context, labConf, firstSlotXCoordinate, yCoordinate);
+                boolean showLabel = Decluttered.CONFIG.itemInfoShown;
+                if(!showLabel&&openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex())!= Items.AIR){
+                    renderLabels(context, firstSlotXCoordinate, yCoordinate);
                 }
             }
         }
     }
 
-    private void renderLabels(DrawContext context,String labConf, int i, int j){
-        ItemStack selectedStack = openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex());
-        List<Text> tooltip;
-        if(labConf.equals("all")){
-            tooltip = selectedStack.getTooltip(Item.TooltipContext.DEFAULT,client.player, this.client.options.advancedItemTooltips ? TooltipType.Default.ADVANCED : TooltipType.Default.BASIC);
-            tooltip.remove(ScreenTexts.EMPTY);
-            tooltip.remove((Text.translatable("item.modifiers.mainhand")).formatted(Formatting.GRAY));
-        }else{
-            tooltip = new ArrayList<Text>();
-            if(labConf.equals("name")||labConf.equals("enchantments")){
-                MutableText name = (Text.literal("")).append(selectedStack.getName()).formatted(selectedStack.getRarity().getFormatting());
-                if (selectedStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME)) {
-                    name.formatted(Formatting.ITALIC);
-                }
-                tooltip.add(name);
-            }
-    
-//            if(labConf.equals("enchantments")){
-//                if (!selectedStack.getComponents().isEmpty()) {
-//                       selectedStack.appendTooltip(DataComponentTypes.ENCHANTMENTS, Item.TooltipContext.create(client.world), TooltipDisplayComponent.DEFAULT, tooltip::add, this.client.options.advancedItemTooltips ? TooltipType.Default.ADVANCED : TooltipType.Default.BASIC);
-//                }
-////                if (selectedStack.getItem() instanceof PotionItem){
-////                    List<Text> temp = new ArrayList<Text>();
-////                    selectedStack.getItem().appendTooltip(selectedStack, Item.TooltipContext.create(client.world), TooltipDisplayComponent.DEFAULT, temp.get(0), TooltipType.Default.ADVANCED);
-////                    tooltip.add(temp.get(0));
-////                }
-//            }
+    @Unique
+    private void renderLabels(DrawContext context, int i, int j){
+        ItemStack selectedStack = openAccessbar.getStacks().get(openAccessbar.getSelectedAccessSlotIndex()).getDefaultStack();
+        List<Text> tooltip = new ArrayList<>();
+        MutableText name = (Text.literal("")).append(selectedStack.getName()).formatted(selectedStack.getRarity().getFormatting());
+        if (selectedStack.getComponents().contains(DataComponentTypes.CUSTOM_NAME)) {
+            name.formatted(Formatting.ITALIC);
         }
-
-        if(tooltip.isEmpty()){
-            return;
-        }
+        tooltip.add(name);
 
         TextRenderer textRenderer = client.textRenderer;
         List<OrderedText>orderedToolTip = Lists.transform(tooltip, Text::asOrderedText);
-        OrderedText name = orderedToolTip.get(0);
 
         context.drawTextWithShadow(textRenderer, name, i+10+3-textRenderer.getWidth(name)/2, j-15, -1);
         for(int v=1;v<orderedToolTip.size();v++) {
@@ -149,7 +127,7 @@ public class InGameHudMixin implements InGameHudAccess{
     }
 
     @Override
-    public void closeOpenAccessbar(boolean select){
+    public void decluttered$closeOpenAccessbar(boolean select){
         if(select){
             this.openAccessbar.selectItem();
         }
@@ -157,22 +135,22 @@ public class InGameHudMixin implements InGameHudAccess{
     }
 
     @Override
-    public void openAccessbar(int num){
+    public void decluttered$openAccessbar(int num){
         openAccessbar = accessBars;
         openAccessbar.resetSelection();
     }
     @Override
-    public AccessBar getOpenAccessBar() {
+    public AccessBar decluttered$getOpenAccessBar() {
         return this.openAccessbar;
     }
 
     @Override
-    public boolean isBarWithNumberOpen(int number){
+    public boolean decluttered$isBarWithNumberOpen(int number){
         return openAccessbar == accessBars;
     }
 
     @Override
-    public void refreshAccessbars() {
+    public void decluttered$refreshAccessbars() {
         accessBars = getAccessBarArray();
     }
 
