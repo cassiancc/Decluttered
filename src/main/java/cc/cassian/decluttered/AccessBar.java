@@ -28,7 +28,8 @@ public class AccessBar{
     }
 
     public void updateAccessStacks(){
-        ItemStack inv = client.player.getMainHandStack();
+        if (client.player==null) return;
+        ItemStack inv = client.player.getMainHandStack().getItem().getDefaultStack();
         stacks.clear();
 
         ArrayList<ItemStack> itemStacks = new ArrayList<>();
@@ -36,10 +37,13 @@ public class AccessBar{
 
         itemStacks.add(inv);
         if (inv.isIn(ModTags.SWAPPABLE)) {
+            stacks.clear();
             inv.streamTags().forEach((itemTagKey -> {
-                if (itemTagKey.id().getNamespace().equals("decluttered")) {
+                var id = itemTagKey.id();
+                if (id.getNamespace().equals("decluttered") && !id.getPath().equals("swappable")) {
                     Registries.ITEM.iterateEntries(itemTagKey).forEach(itemRegistryEntry -> {
-                        itemStacks.add(itemRegistryEntry.value().getDefaultStack());
+                        var value = itemRegistryEntry.value().getDefaultStack();
+                        itemStacks.add(value);
                     });
                 }
             }));

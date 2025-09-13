@@ -6,7 +6,7 @@ import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 public class ModConfig extends WrappedConfig {
 
     @Comment("If enabled, you don't need to hold down the key to keep the access bar open.")
-    public boolean toggleMode = true;
+    public boolean toggleMode = false;
     @Comment("Left clicking will select current item.")
     public boolean leftClickSelect = true;
     @Comment("Pressing esc will close the access bar without selecting an item.")

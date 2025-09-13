@@ -1,6 +1,21 @@
 {
   "values": [
+    "#decluttered:bamboo",
     "#decluttered:oak",
-    "#decluttered:spruce"
+    "#decluttered:spruce",
+    "#decluttered:birch",
+    "#decluttered:jungle",
+    "#decluttered:cherry",
+    "#decluttered:acacia",
+    "#decluttered:dark_oak",
+    "#decluttered:pale_oak",
+    "#decluttered:crimson",
+    "#decluttered:warped",
+    "#decluttered:granite",
+    "#decluttered:diorite",
+    "#decluttered:andesite",
+    "#decluttered:stone",
+    "#decluttered:end_stone"
+
   ]
 }
